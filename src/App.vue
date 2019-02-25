@@ -71,10 +71,20 @@ export default {
   created: function() {
     this.fetchAndUpdate(this.api)
   },
+  mounted: function() {
+    // handle edge case where window is reloaded while scrolled down
+    this.ensureWindowIsNearTop()
+  },
   methods: {
+    ensureWindowIsNearTop: function() {
+      // if the user is scrolled past the first li element, scroll to top
+      if (window.pageYOffset > 211) {
+        window.scroll(0,0);
+      }
+    },
     fetchAndUpdate: async function(dataObj) {
       this.setLoading(true);
-      window.scroll(0,0);
+      this.ensureWindowIsNearTop();
       const fullUrl = `${this.state.baseUrl}?limit=${this.state.limit}&page=${this.state.page}`;
       try {
         const response = await fetch(fullUrl);
