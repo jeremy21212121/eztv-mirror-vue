@@ -74,6 +74,7 @@ export default {
   methods: {
     fetchAndUpdate: async function(dataObj) {
       this.setLoading(true);
+      window.scroll(0,0);
       const fullUrl = `${this.state.baseUrl}?limit=${this.state.limit}&page=${this.state.page}`;
       try {
         const response = await fetch(fullUrl);
@@ -101,6 +102,9 @@ export default {
 </script>
 
 <style>
+html {
+  scroll-behavior: smooth;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
