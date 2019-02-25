@@ -58,7 +58,10 @@ li {
     border: 1px solid #666;
     border-radius: 3px;
     align-items: center;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
+}
+li:nth-child(2n-1) {
+    background-color: rgba(255,255,255,0.15);
 }
 a {
     color:rgb(230, 230, 255);  

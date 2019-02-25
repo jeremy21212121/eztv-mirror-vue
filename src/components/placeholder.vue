@@ -33,10 +33,14 @@ li {
     border: 1px solid #666;
     border-radius: 3px;
     align-items: center;
-    background-color: rgb(255,255,255);
+    
+    background-color: rgba(255,255,255,0.5);
     opacity: 0.1;
     /* transition: opacity 1s ease; */
     animation: flash 2s infinite ease-in-out;
+}
+li:nth-child(2n-1) {
+    background-color: rgb(255,255,255);
 }
 @keyframes flash {
     0% {
@@ -45,7 +49,7 @@ li {
     }
     50% {
         /* background-color: rgba(255,255,255,0.2); */
-        opacity: 0.15;
+        opacity: 0.3;
     }
     100% {
         /* background-color: rgba(255,255,255,0.1); */
