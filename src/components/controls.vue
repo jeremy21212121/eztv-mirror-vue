@@ -1,7 +1,7 @@
 <template>
     <nav>
         <button
-            v-if="pageNumber > 1"
+            v-show="pageNumber > 1"
             @click="pageNumber--"
             title="Previous page"
         >
@@ -11,7 +11,7 @@
             {{pageNumber}}
         </span>
         <button
-            v-if="pageNumber < 50"
+            v-show="pageNumber < 50"
             @click="pageNumber++"
             title="Next page"
             
@@ -21,6 +21,23 @@
     
     </nav>
 </template>
+
+<style scoped>
+nav {
+    font-size: 1.8em;
+    display: flex;
+    justify-content: center;
+}
+button {
+    line-height: 2em;
+    width: 3em;
+    /* font-size: 2em; */
+}
+span {
+    margin: 0 8px;
+}
+</style>
+
 
 <script>
 export default {

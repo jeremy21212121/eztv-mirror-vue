@@ -2,7 +2,20 @@
     <li class="torrent-container">
 
         <span class="torrent-name">
-        {{title}}
+            <a 
+                v-if="imdb.length > 1"
+                :href="this.getImdbUrl()"
+                v-text="title"
+                title="See IMDb info"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+            </a>
+            <span
+                v-else
+            >
+                {{title}}
+            </span>
         </span>
         <span class="torrent-magnet">
             <a 
@@ -46,6 +59,12 @@ li {
     border-radius: 3px;
     align-items: center;
     background-color: rgba(255,255,255,0.1);
+}
+a {
+    color:rgb(230, 230, 255);  
+}
+a:visited {
+    color:rgb(220, 200, 250);
 }
 span {
     line-height: 1.5em;
@@ -108,13 +127,23 @@ img {
 <script>
 export default {
     name: 'Torrent',
+    data: function() {
+        return {
+            imdbBase: 'https://www.imdb.com/title/tt',
+            imdbId: this.imdb,
+            getImdbUrl: function() {
+                return this.imdbBase + this.imdbId
+            }
+        }
+    },
     props : {
         title: String,
         magnet_url: String,
         size_bytes: String,
         date_released_unix: Number,
         seeds: Number,
-        peers: Number
+        peers: Number,
+        imdb: String
     },
     methods: {
         parseSize: function(size_str) {

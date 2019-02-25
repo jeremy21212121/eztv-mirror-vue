@@ -12,6 +12,8 @@
     />
     <Torrents
       :torrents="this.api.torrents"
+      :loading="this.state.loading"
+      :limit="this.state.limit"
     />
     <Controls
       :page="this.state.page"
@@ -38,7 +40,8 @@ const dataObj = {
     limit: 40,
     baseUrl: 'https://eztv.io/api/get-torrents',
     error: '',
-    speech: 'Meowcats slays the ads!'
+    speech: 'Meowcats slays the ads!',
+    loading: false
   },
   setPage: function(pageNumber) {
     this.state.page = pageNumber
@@ -47,7 +50,10 @@ const dataObj = {
     this.state.limit = limitNumber
   },
   setError: function(msg) {
-    this.state.error = msg;
+    this.state.error = msg
+  },
+  setLoading: function(bool) {
+    this.state.loading = bool
   }
 };
 
@@ -67,6 +73,7 @@ export default {
   },
   methods: {
     fetchAndUpdate: async function(dataObj) {
+      this.setLoading(true);
       const fullUrl = `${this.state.baseUrl}?limit=${this.state.limit}&page=${this.state.page}`;
       try {
         const response = await fetch(fullUrl);
@@ -74,22 +81,21 @@ export default {
         Object.assign(dataObj, json);
         }
       catch(e) {
-        console.error(e);
-         this.setError("Eztv appears to be down. Try again later.");
-         return;
+        // console.error(e);
+        this.setError("Eztv appears to be down. Try again later.");
+        return;
       }
       if (this.state.error.length > 1) {
         this.setError('');//clear error if successful
       }
+      this.setLoading(false);
     }
   },
   watch: {
-    state: {
-      handler: function() {
-        this.fetchAndUpdate(this.api)
-      },
-      deep: true
+    'state.page': function() {
+      this.fetchAndUpdate(this.api)
     }
+
   }
 }
 </script>
