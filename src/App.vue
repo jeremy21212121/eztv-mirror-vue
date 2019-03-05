@@ -10,6 +10,9 @@
       v-if="this.state.error.length > 1"
       :msg="this.state.error"
     />
+    <Searchbox 
+      @submit="searchByName($event)"
+    />
     <Torrents
       :torrents="this.api.torrents"
       :loading="this.state.loading"
@@ -23,6 +26,7 @@
 </template>
 
 <script>
+import Searchbox from "./components/search.vue";
 import Torrents from './components/torrents.vue'
 import Controls from './components/controls.vue'
 import Error from './components/error.vue'
@@ -66,7 +70,8 @@ export default {
     Torrents,
     Controls,
     Error,
-    Speechbubble
+    Speechbubble,
+    Searchbox
   },
   created: function() {
     this.fetchAndUpdate(this.api)
@@ -100,6 +105,9 @@ export default {
         this.setError('');//clear error if successful
       }
       this.setLoading(false);
+    },
+    searchByName: function() {
+      
     }
   },
   watch: {
