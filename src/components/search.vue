@@ -1,8 +1,10 @@
 <template>
   <section class="search">
-    <form>
+    <form
+      @submit.prevent="fetchOmdb(searchValue, results)"
+    >
       <input type="search" placeholder="search" aria-label="search by name" v-model="searchValue">
-      <button type="submit" aria-label="submit search" @click.prevent="fetchOmdb(searchValue, results)">
+      <button type="submit" aria-label="submit search">
         <img
           aria-hidden="true"
           class="searchIcon"
@@ -11,25 +13,39 @@
       </button>
     </form>
     <ol
-      v-if="results.length > 1"
+      v-if="results.length > 0"
     >
         <li
           v-for="(item, index) in results"
-          :key="index"
-          @click="$emit('search-by-imdb', item.imdbID)"
+          :key="'omdb-item' + index"
+          @click="imdbSearchHandler({ imdb_id: trimImdbId(item.imdbID) })"
         >
+        <!-- begin v-if -->
             <img
-              v-if="item.Poster"
+              v-if="item.Poster !== 'N/A'"
               :src="item.Poster"
-              alt=""
+              alt="Poster"
             />
+          <!-- v-else -->
             <i
               v-else
             >
+              <span>
+                {{item.Title.substring(0,1)}}
+              </span>
             </i>
-            <span>
-                {{item.Title}}
-            </span>
+            <!-- end of v-else -->
+            <div class="info-wrapper">
+              <span>
+              {{item.Title}}
+              </span>
+              <span
+                v-if="item.Year"
+              >
+              {{item.Year}}
+              </span>
+            </div>
+
         </li>
     </ol>
   </section>
@@ -41,15 +57,32 @@ export default {
   name: "Searchbox",
   data: function() {
     return {
-      searchValue: "",
+      searchValue: '',
       omdb: {
-        baseUrl: "https://www.omdbapi.com/",
-        type: "series",
-        api: 4053666222
+        baseUrl: 'https://www.omdbapi.com/',
+        type: 'series',
+        api: 4053666222 // base 10 representation of a base 16 api key
       },
       results: [],
-      error: ""
+      error: ''
     };
+  },
+  watch: {
+    error(val) {
+      if (val != '') {
+        this.$emit('error', val);
+        this.results.length = 0;
+      } else {
+        this.$emit('clearError');
+      }
+    },
+    searchValue(val) {
+      if (val === '') {
+        // if the searchValue becomes an empty string, clear the search results and any exisiting error messages
+        this.results.length = 0;
+        this.clearError();
+      }
+    }
   },
   methods: {
     setError: function(errorStr) {
@@ -73,7 +106,8 @@ export default {
             if (
                 json.Response === "True" && 
                 parseInt(json.totalResults) > 0 
-            ) { 
+            ) {
+                resultArr.length = 0;// clear existing resultArr to accomodate the new results
                 resultArr.push(...json.Search);
                 // you can tell its a .net api by the capitalized property names and using strings instead of booleans and numbers. WHY!?!
             }
@@ -84,18 +118,25 @@ export default {
                 this.setError(json.Error)
             }
         }
-        catch(e) {
+        catch (e) {
             this.setError(e.message)
         }
-    } 
+    },
+    trimImdbId(imdbId) {
+      return imdbId.replace(/tt/,'');
+    },
+    imdbSearchHandler(paramObj) {
+      this.$emit( 'searchByImdb', paramObj );
+      this.searchValue = '';
+    }
   }
 };
 </script>
 
 <style scoped>
 section {
-  /* display: flex;
-  justify-content: flex-end; */
+  display: flex;
+  flex-direction: column;
   padding: 4px;
 }
 form {
@@ -103,8 +144,8 @@ form {
   display: flex;
   justify-content: flex-end;
   /* width: 50%; */
-  max-width: 720px;
-  background-color: rgba(255, 255, 255, 0.5);
+  /* max-width: 720px; */
+  background-color: rgba(255, 255, 255, 0.2);
   color: black;
   border-radius: 3px;
   padding: 4px 2px;
@@ -113,7 +154,7 @@ input[type="search"] {
     border-radius: 3px;
     margin: 4px;
     align-self: center;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     line-height: 1.4rem;
 }
 img.searchIcon {
@@ -126,41 +167,83 @@ button[type="submit"] {
     margin: 2px;
     border: 1px solid rgba(255, 255, 255, 1);
 }
+ol::before {
+    position: relative;
+    bottom: 57px;
+    left: 38%;
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 40px solid rgba(255,255,255,0.2);
+}
 ol {
-    padding: 10px 8px;
-    /* padding-left: 0; */
+    align-self: flex-end;
+    width: 75%;
+    max-width: 640px;
+    margin-top: 48px;
+    /* padding: 10px 8px; */
+    padding-left: 0;
+    padding-bottom: 5px;
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.2);
 }
 li {
     display: flex;
-    justify-content: flex-start;
-    line-height: 48px;
+    justify-items: flex-start;
+    /* line-height: 48px; */
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.2);
-    margin: 4px 2px;
+    margin: 4px 6px;
     /* padding-left: 0; */
 }
+li:first-of-type {
+    margin-top: 0;
+}
 li img, li i {
-    padding: 4px;
-    max-width: 48px;
+    align-self: flex-start;
+    padding: 4px 4px 4px 8px;
+    /* max-width: 48px; */
     width: 48px;
-    max-height: 48px;
+    /* max-height: 48px; */
+    height: 48px;
     border-radius: 50%;
     transition: all 0.3s ease-in-out;
 }
-li img:hover {
-    max-width: 96px;
-    max-height: 96px;
-    width: 96px;
+li span {
+    align-self: center;
+    line-height: 2;
+    flex-grow: 1;
+    transition: all 0.3s ease-in-out;
+
 }
+li:hover span{
+  transform: scale(1.2);
+}
+li:hover img, li:hover i {
+    /* max-width: 96px;
+    max-height: 96px; */
+    width: calc(48px*1.2);
+    height: calc(48px*1.2);
+} 
 li i {
     background-color: rgba(255, 255, 255, 0.5);
+    vertical-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-li span {
-    /* flex-grow: 1; */
-    /* text-align: center; */
-    align-self: center;
+li i span {
+  font-weight: bold;
+  font-size: 1.3em;
+  font-style: normal;
+  
+}
+div.info-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 

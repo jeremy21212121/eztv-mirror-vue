@@ -11,7 +11,9 @@
       :msg="this.state.error"
     />
     <Searchbox 
-      @submit="searchByName($event)"
+      @searchByImdb="searchByImdb"
+      @error="setError($event)"
+      @clearError="setError('')"
     />
     <Torrents
       :torrents="this.api.torrents"
@@ -33,6 +35,7 @@ import Error from './components/error.vue'
 import Speechbubble from './components/speechBubble.vue'
 
 const dataObj = {
+  baseUrl: 'https://eztv.io/api/get-torrents',
   api: {
     limit: 0,
     page: 0,
@@ -42,7 +45,6 @@ const dataObj = {
   state: {
     page: 1,
     limit: 40,
-    baseUrl: 'https://eztv.io/api/get-torrents',
     error: '',
     speech: 'Meowcats slays the ads!',
     loading: false
@@ -87,27 +89,45 @@ export default {
         window.scroll(0,0);
       }
     },
-    fetchAndUpdate: async function(dataObj) {
-      this.setLoading(true);
-      this.ensureWindowIsNearTop();
-      const fullUrl = `${this.state.baseUrl}?limit=${this.state.limit}&page=${this.state.page}`;
+    encodeParams: (obj) => (!obj) ? '' :
+    // if no obj is passed in, return an empty string.
+    // else return url encoded params
+      ( 
+        "?" + 
+        Object.keys(obj).map( k => 
+          `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`
+          )
+          .join('&') 
+      ),
+    fetchJSON: async function(params) {
+      const url = this.baseUrl + this.encodeParams(params);
       try {
-        const response = await fetch(fullUrl);
+        const response = await fetch(url);
         const json = await response.json();
-        Object.assign(dataObj, json);
-        }
-      catch(e) {
-        // console.error(e);
-        this.setError("Eztv appears to be down. Try again later.");
+        return json;
+      }
+      catch (e) {
+        this.setError("The service is currently unreachable");
         return;
       }
-      if (this.state.error.length > 1) {
-        this.setError('');//clear error if successful
+    },
+    
+    fetchAndUpdate: async function(dataObj = this.api, params) {
+      this.setLoading(true);
+      this.ensureWindowIsNearTop();
+      const json = await this.fetchJSON(params);
+      if (json) {
+        if (json.torrents_count > 0) {
+          Object.assign(dataObj, json);
+          this.setError('');
+        } else {
+          this.setError('Sorry, no torrents found :(');
+        }
       }
       this.setLoading(false);
     },
-    searchByName: function() {
-      
+    searchByImdb: function(payload) {
+      this.fetchAndUpdate(this.api, payload);
     }
   },
   watch: {
