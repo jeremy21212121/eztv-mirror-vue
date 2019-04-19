@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <div id="header-image">
-        <img alt="Meowcats logo" src="./assets/logo.png">
+        <a href="/" title="home">
+          <img alt="Meowcats logo" src="./assets/logo.png">
+        </a>
         <Speechbubble
           :msg="this.state.speech"
         />
@@ -131,8 +133,8 @@ export default {
     }
   },
   watch: {
-    'state.page': function() {
-      this.fetchAndUpdate(this.api)
+    'state.page': function(val) {
+      this.fetchAndUpdate(this.api, {page: val});
     }
 
   }
