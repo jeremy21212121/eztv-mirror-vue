@@ -55,7 +55,7 @@ li {
     list-style-type: none;
     display: flex;
     margin: 4px 0px;
-    border: 1px solid #666;
+    /* border: 1px solid #666; */
     border-radius: 3px;
     align-items: center;
     background-color: rgba(255,255,255,0.05);
