@@ -2,7 +2,7 @@
   <nav>
     <button v-show="pageNumber > 1" @click="pageNumber--" title="Previous page">&lt;</button>
     <span title="Current page">{{pageNumber}}</span>
-    <button v-show="pageNumber < 50" @click="pageNumber++" title="Next page">&gt;</button>
+    <button v-show="!disableNextButton" @click="pageNumber++" title="Next page">&gt;</button>
   </nav>
 </template>
 
@@ -31,12 +31,16 @@ export default {
   data: function() {
     return {
       pageNumber: this.page
-      // limitData: this.limit
     };
   },
   props: {
-    page: Number
-    // limit: Number
+    page: Number,
+    disableNext: Boolean
+  },
+  computed: {
+    disableNextButton() {
+      return (this.pageNumber > 50) || this.disableNext
+    },
   },
   watch: {
     pageNumber: function(val) {

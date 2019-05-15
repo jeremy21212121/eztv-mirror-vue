@@ -1,12 +1,13 @@
 <template>
   <div>
     <Torrents
-      :torrents="this.api.torrents"
-      :loading="this.state.loading"
-      :limit="this.state.limit"
+      :torrents="api.torrents"
+      :loading="state.loading"
+      :limit="state.limit"
     />
     <Controls
-      :page="this.state.page"
+      :page="state.page"
+      :disableNext="this.api.torrents.length < 30"
       @input="setPage"
     />
   </div>
