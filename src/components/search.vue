@@ -1,10 +1,10 @@
 <template>
   <section class="search">
     <form
-      @submit.prevent="fetchOmdb(searchValue, results)"
+      @submit.prevent="()=>{}"
     >
-      <input type="search" placeholder="search" aria-label="search by name" v-model="searchValue">
-      <button type="submit" aria-label="submit search">
+      <input type="search" placeholder="search" aria-label="search by name" v-model="searchValue" required>
+      <button type="submit" @click.prevent="fetchOmdb(searchValue, results)" aria-label="submit search">
         <img
           aria-hidden="true"
           class="searchIcon"
@@ -14,6 +14,7 @@
     </form>
     <ol
       v-if="results.length > 0"
+      class="active-list"
     >
         <li
           v-for="(item, index) in results"
@@ -45,8 +46,21 @@
               {{item.Year}}
               </span>
             </div>
-
+          <button
+            class="add"
+            v-if="hasLocalStorage"
+            type="submit"
+            title="add to my shows"
+            @click.stop="addToMyShows(trimImdbId(item.imdbID))"
+          >
+            +
+          </button>
         </li>
+    </ol>
+    <ol
+      v-else
+      class="inactive-list"
+    >
     </ol>
   </section>
 </template>
@@ -55,6 +69,9 @@
 
 export default {
   name: "Searchbox",
+  props: {
+    hasLocalStorage: Boolean
+  },
   data: function() {
     return {
       searchValue: '',
@@ -100,6 +117,7 @@ export default {
       );
     },
     fetchOmdb: async function(searchStr, resultArr) {
+        if (searchStr === '') { return }
         try {
             const result = await fetch( this.buildOmdbUrl(searchStr) );
             const json = await result.json();
@@ -108,7 +126,9 @@ export default {
                 parseInt(json.totalResults) > 0 
             ) {
                 resultArr.length = 0;// clear existing resultArr to accomodate the new results
-                resultArr.push(...json.Search);
+                const ongoing = json.Search.filter(x => x.Year.endsWith('–')).sort((a,b) => parseInt(b.Year.replace('–', '')) - parseInt(a.Year.replace('–', '')))
+                const ended = json.Search.filter(x => !x.Year.endsWith('–')).sort((a,b) => parseInt(b.Year.substring(0,4)) - parseInt(a.Year.substring(0,4)))
+                resultArr.push(...ongoing, ...ended)
                 // you can tell its a .net api by the capitalized property names and using strings instead of booleans and numbers. WHY!?!
             }
             if (
@@ -128,6 +148,17 @@ export default {
     imdbSearchHandler(paramObj) {
       this.$emit( 'searchByImdb', paramObj );
       this.searchValue = '';
+    },
+    addToMyShows(imdbId) {
+      if (!localStorage.hasOwnProperty('myShows')) {
+        localStorage.setItem('myShows', JSON.stringify([ imdbId ]))
+      } else {
+        const myShows = JSON.parse(localStorage.getItem('myShows'));
+        if (!myShows.includes(imdbId)) {
+          myShows.push(imdbId);
+          localStorage.setItem('myShows', JSON.stringify(myShows))
+        }
+      }
     }
   }
 };
@@ -167,6 +198,17 @@ button[type="submit"] {
     margin: 2px;
     border: 1px solid rgba(255, 255, 255, 1);
 }
+button.add {
+  color: rgba(255,255,255,0.4);
+  font-weight: bold;
+  font-size: 1.5em;
+  background-color: #42ae81;
+  align-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  margin: 4px 8px 4px 4px;
+  width: 40px;
+  height: 32px;
+}
 ol::before {
     position: relative;
     bottom: 57px;
@@ -179,15 +221,26 @@ ol::before {
     border-bottom: 40px solid rgba(255,255,255,0.2);
 }
 ol {
+    transition: all 300ms ease;
     align-self: flex-end;
-    width: 75%;
+    width: 95%;
     max-width: 640px;
     margin-top: 48px;
+    margin-right: 4px;
     /* padding: 10px 8px; */
     padding-left: 0;
     padding-bottom: 5px;
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.2);
+}
+ol.inactive-list {
+  max-height: 0px;
+  overflow: hidden;
+  margin: 0;
+  background-color: rgba(255,255,255,0);
+}
+ol.active-list {
+  max-height: 100vh;
 }
 li {
     display: flex;
@@ -218,15 +271,16 @@ li span {
     transition: all 0.3s ease-in-out;
 
 }
-li:hover span{
-  transform: scale(1.2);
+li:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
-li:hover img, li:hover i {
-    /* max-width: 96px;
-    max-height: 96px; */
+li:hover .infowrapper span {
+  color: #eee;
+}
+/* li:hover img, li:hover i {
     width: calc(48px*1.2);
     height: calc(48px*1.2);
-} 
+}  */
 li i {
     background-color: rgba(255, 255, 255, 0.5);
     vertical-align: center;
@@ -244,6 +298,16 @@ div.info-wrapper {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+}
+@media screen and (min-width: 420px) {
+  ol {
+    width: 85%;
+  }
+}
+@media screen and (min-width: 550px) {
+  ol {
+    width: 75%;
+  }
 }
 </style>
 

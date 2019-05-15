@@ -16,53 +16,41 @@
       @searchByImdb="searchByImdb"
       @error="setError($event)"
       @clearError="setError('')"
+      :hasLocalStorage="hasLocalStorage"
     />
-    <Torrents
-      :torrents="this.api.torrents"
-      :loading="this.state.loading"
-      :limit="this.state.limit"
-    />
-    <Controls
-      :page="this.state.page"
-      @input="setPage($event)"
-    />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import Searchbox from "./components/search.vue";
-import Torrents from './components/torrents.vue'
-import Controls from './components/controls.vue'
+// import Torrents from './components/torrents.vue'
+// import Controls from './components/controls.vue'
+// import Latest from './components/latest.vue'
 import Error from './components/error.vue'
 import Speechbubble from './components/speechBubble.vue'
 
 const dataObj = {
-  baseUrl: 'https://eztv.io/api/get-torrents',
-  api: {
-    limit: 0,
-    page: 0,
-    torrents: [],
-    torrent_count: 0
-  },
+//   baseUrl: 'https://eztv.io/api/get-torrents',
+//   api: {
+//     limit: 0,
+//     page: 0,
+//     torrents: [],
+//     torrent_count: 0
+//   },
   state: {
-    page: 1,
-    limit: 40,
+//     page: 1,
+//     limit: 40,
     error: '',
     speech: 'Meowcats slays the ads!',
     loading: false
   },
-  setPage: function(pageNumber) {
-    this.state.page = pageNumber
-  },
-  setLimit: function(limitNumber) {
-    this.state.limit = limitNumber
-  },
-  setError: function(msg) {
-    this.state.error = msg
-  },
-  setLoading: function(bool) {
-    this.state.loading = bool
-  }
+//   setPage: function(pageNumber) {
+//     this.state.page = pageNumber
+//   },
+//   setLimit: function(limitNumber) {
+//     this.state.limit = limitNumber
+//   },
 };
 
 export default {
@@ -71,71 +59,88 @@ export default {
     return dataObj
   },
   components: {
-    Torrents,
-    Controls,
     Error,
     Speechbubble,
     Searchbox
   },
+  computed: {
+    hasLocalStorage() {
+      var mod = 'localStorageTest5421524587';
+      try {
+          localStorage.setItem(mod, mod);
+          localStorage.removeItem(mod);
+          return true;
+      } catch(e) {
+          return false;
+      }
+    },
+  },
   created: function() {
-    this.fetchAndUpdate(this.api)
+    // this.fetchAndUpdate(this.api)
   },
   mounted: function() {
     // handle edge case where window is reloaded while scrolled down
-    this.ensureWindowIsNearTop()
+    // this.ensureWindowIsNearTop()
   },
   methods: {
-    ensureWindowIsNearTop: function() {
-      // if the user is scrolled past the first li element, scroll to top
-      if (window.pageYOffset > 211) {
-        window.scroll(0,0);
-      }
-    },
-    encodeParams: (obj) => (!obj) ? '' :
-    // if no obj is passed in, return an empty string.
-    // else return url encoded params
-      ( 
-        "?" + 
-        Object.keys(obj).map( k => 
-          `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`
-          )
-          .join('&') 
-      ),
-    fetchJSON: async function(params) {
-      const url = this.baseUrl + this.encodeParams(params);
-      try {
-        const response = await fetch(url);
-        const json = await response.json();
-        return json;
-      }
-      catch (e) {
-        this.setError("The service is currently unreachable");
-        return;
-      }
-    },
+    // ensureWindowIsNearTop: function() {
+    //   // if the user is scrolled past the first li element, scroll to top
+    //   if (window.pageYOffset > 211) {
+    //     window.scroll(0,0);
+    //   }
+    // },
+    // encodeParams: (obj) => (!obj) ? '' :
+    // // if no obj is passed in, return an empty string.
+    // // else return url encoded params
+    //   ( 
+    //     "?" + 
+    //     Object.keys(obj).map( k => 
+    //       `${encodeURIComponent(k)}=${encodeURIComponent(obj[k])}`
+    //       )
+    //       .join('&') 
+    //   ),
+    // fetchJSON: async function(params) {
+    //   const url = this.baseUrl + this.encodeParams(params);
+    //   try {
+    //     const response = await fetch(url);
+    //     const json = await response.json();
+    //     return json;
+    //   }
+    //   catch (e) {
+    //     this.setError("The service is currently unreachable");
+    //     return;
+    //   }
+    // },
     
-    fetchAndUpdate: async function(dataObj = this.api, params) {
-      this.setLoading(true);
-      this.ensureWindowIsNearTop();
-      const json = await this.fetchJSON(params);
-      if (json) {
-        if (json.torrents_count > 0) {
-          Object.assign(dataObj, json);
-          this.setError('');
-        } else {
-          this.setError('Sorry, no torrents found :(');
-        }
-      }
-      this.setLoading(false);
+    // fetchAndUpdate: async function(dataObj = this.api, params) {
+    //   this.setLoading(true);
+    //   this.ensureWindowIsNearTop();
+    //   const json = await this.fetchJSON(params);
+    //   if (json) {
+    //     if (json.torrents_count > 0) {
+    //       Object.assign(dataObj, json);
+    //       this.setError('');
+    //     } else {
+    //       this.setError('Sorry, no torrents found :(');
+    //     }
+    //   }
+    //   this.setLoading(false);
+    // },
+    setError: function(msg) {
+      this.state.error = msg
+    },
+    setLoading: function(bool) {
+      this.state.loading = bool
     },
     searchByImdb: function(payload) {
-      this.fetchAndUpdate(this.api, payload);
+      // this.fetchAndUpdate(this.api, payload);
+      this.$router.push('/search/' + payload.imdb_id + '/1')
     }
   },
   watch: {
-    'state.page': function(val) {
-      this.fetchAndUpdate(this.api, {page: val});
-    }
+    // 'state.page': function(val) {
+    //   this.fetchAndUpdate(this.api, {page: val});
+    // }
 
   }
 }
