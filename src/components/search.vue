@@ -25,9 +25,11 @@
             <img
               v-if="item.Poster !== 'N/A'"
               :src="item.Poster"
+              @error="item.Poster = 'N/A'"
               alt="Poster"
-            />
-          <!-- v-else -->
+            /> <!-- @error handler handles images that don't load (403/404 etc) by setting item.Poster to 'N/A', causing placeholder to be shown instead -->
+
+          <!-- v-else: show placeholder icon-->
             <i
               v-else
             >
@@ -143,11 +145,11 @@ export default {
         }
     },
     trimImdbId(imdbId) {
-      return imdbId.replace(/tt/,'');
+      return imdbId.replace(/tt/,'')
     },
     imdbSearchHandler(paramObj) {
-      this.$emit( 'searchByImdb', paramObj );
-      this.searchValue = '';
+      this.$emit( 'searchByImdb', paramObj )
+      this.searchValue = ''
     },
     addToMyShows(imdbId) {
       if (!localStorage.hasOwnProperty('myShows')) {
@@ -155,11 +157,11 @@ export default {
       } else {
         const myShows = JSON.parse(localStorage.getItem('myShows'));
         if (!myShows.includes(imdbId)) {
-          myShows.push(imdbId);
+          myShows.push(imdbId)
           localStorage.setItem('myShows', JSON.stringify(myShows))
         }
       }
-    }
+    },
   }
 };
 </script>
@@ -174,8 +176,6 @@ form {
   
   display: flex;
   justify-content: flex-end;
-  /* width: 50%; */
-  /* max-width: 720px; */
   background-color: rgba(255, 255, 255, 0.2);
   color: black;
   border-radius: 3px;
@@ -227,7 +227,6 @@ ol {
     max-width: 640px;
     margin-top: 48px;
     margin-right: 4px;
-    /* padding: 10px 8px; */
     padding-left: 0;
     padding-bottom: 5px;
     border-radius: 3px;
@@ -245,21 +244,17 @@ ol.active-list {
 li {
     display: flex;
     justify-items: flex-start;
-    /* line-height: 48px; */
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.2);
     margin: 4px 6px;
-    /* padding-left: 0; */
 }
 li:first-of-type {
     margin-top: 0;
 }
 li img, li i {
-    align-self: flex-start;
-    padding: 4px 4px 4px 8px;
-    /* max-width: 48px; */
+    margin: auto;
+    margin-left: 8px;
     width: 48px;
-    /* max-height: 48px; */
     height: 48px;
     border-radius: 50%;
     transition: all 0.3s ease-in-out;
@@ -277,10 +272,6 @@ li:hover {
 li:hover .infowrapper span {
   color: #eee;
 }
-/* li:hover img, li:hover i {
-    width: calc(48px*1.2);
-    height: calc(48px*1.2);
-}  */
 li i {
     background-color: rgba(255, 255, 255, 0.5);
     vertical-align: center;
@@ -310,4 +301,3 @@ div.info-wrapper {
   }
 }
 </style>
-
