@@ -33,7 +33,8 @@ export default {
         error: '',
         speech: 'Meowcats slays the ads!',
         loading: false
-      }
+      },
+      myShowsArray: [],
     };
   },
   props: {
@@ -57,6 +58,25 @@ export default {
     // this.fetchAndUpdate(this.api)
   },
   mounted: function() {
+    // isMyShows
+    if (this.$route.path.toLowerCase().includes('myshows')) {
+      // TODO: see if we already have myShowsArray
+      if (this.hasLocalStorage()) { // feature detection
+        const myShows = localStorage.getItem('myShows') // check for entry in localStorage
+        if (myShows) {
+          let myShowArray = []
+          try {
+            const arr = JSON.parse(myShows) // try and parse what we found in localStorage
+            myShowArray.push(...arr) // if we got this far, JSON.parse was successful
+          } catch (e) {
+            // in case of invalid json, myShowArray.length === 0
+          }
+          if (myShowArray.length > 0) {
+            // we found a valid entry in localStorage
+          }
+        }
+      }
+    }
     if (this.pageNumber) {
       this.setPage(parseInt(this.pageNumber))
     }
@@ -65,6 +85,16 @@ export default {
     this.ensureWindowIsNearTop()
   },
   methods: {
+    hasLocalStorage() {
+      const test = 'meowcatsdotfuntest';
+      try {
+          localStorage.setItem(test, test);
+          localStorage.removeItem(test);
+          return true;
+      } catch(e) {
+          return false;
+      }
+    },
     ensureWindowIsNearTop: function() {
       // if the user is scrolled past the first li element, scroll to top
       if (window.pageYOffset > 211) {
