@@ -29,6 +29,7 @@ export default {
   name: "Torrents",
   data: function() {
     return {
+      // create an array containing 1 to $limit for placeholders while loading results
       keyArray: Array.from(Array(this.limit).keys()).map(n => n + 1)
     };
   },
