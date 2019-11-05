@@ -6,9 +6,8 @@
       :limit="state.limit"
     />
     <Controls
-      :page="state.page"
+      :page="parseInt(this.pageNumber)"
       :disableNext="this.api.torrents.length < 30"
-      @input="setPage"
     />
   </div>
 </template>
@@ -28,10 +27,8 @@ export default {
         torrent_count: 0
       },
       state: {
-        page: 1,
-        limit: 40,
+        limit: 30,
         error: '',
-        speech: 'Meowcats slays the ads!',
         loading: false
       }
     };
@@ -46,20 +43,15 @@ export default {
   },
   computed: {
     params() {
-      const paramObj = { page: this.state.page }
+      const paramObj = { page: this.pageNumber, limit: this.state.limit }
       if (this.imdbID) {
         paramObj.imdb_id = this.imdbID
       }
       return paramObj
-    },
-  },
-  created: function() {
-    // this.fetchAndUpdate(this.api)
+    }
   },
   mounted: function() {
-    if (this.pageNumber) {
-      this.setPage(parseInt(this.pageNumber))
-    }
+    // handles loading data on initial page load/refresh
     this.fetchAndUpdate(this.api, this.params)
     // handle edge case where window is reloaded while scrolled down
     this.ensureWindowIsNearTop()
@@ -107,12 +99,6 @@ export default {
       }
       this.setLoading(false);
     },
-    setPage: function(pageNumber) {
-      this.state.page = pageNumber
-    },
-    setLimit: function(limitNumber) {
-      this.state.limit = limitNumber
-    },
     setError: function(msg) {
       this.state.error = msg
     },
@@ -121,19 +107,13 @@ export default {
     }
   },
   watch: {
-    params(obj, oldObj) {
-      if (obj.page !== oldObj.page) {
-        this.$router.push(this.$route.path.replace(/[0-9]+$/, obj.page));
-      }
+    params(obj) {
+      // fetches new results if any params change. This handles loading new results on page navigation.
+      // an alternative approach is to use a router guard (beforeRouteUpdate), but has the downside of delaying component creation & updating route until the http request is completed.
       this.fetchAndUpdate(this.api, obj)
-    },
-    pageNumber(val) {
-      if (val) {
-        this.setPage(parseInt(val))
-      }
-      this.fetchAndUpdate(this.api, this.params)
+      // update url and set history point
+      this.$router.push(this.$route.path.replace(/[0-9]+$/, obj.page))
     }
   }
 }
-
 </script>
