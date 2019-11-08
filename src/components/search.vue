@@ -217,14 +217,19 @@ form.search-form {
 form.settings-form {
   display: flex;
   max-height: 0px;
-  visibility: hidden;
+  /* visibility: hidden; */
+  opacity: 0;
   width: 100%;
-  transition: max-height 300ms ease;
+  transition: max-height 500ms ease,opacity 300ms ease;
 }
 form.settings-form.active {
   max-height: 64px;
-  visibility: visible;
+  /* visibility: visible; */
+  opacity: 1;
   /* transition: all 300ms ease; */
+}
+form.settings-form label {
+  display: block;
 }
 input[type="search"] {
   border-radius: 3px;
