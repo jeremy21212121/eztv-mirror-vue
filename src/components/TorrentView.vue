@@ -111,8 +111,12 @@ export default {
       // fetches new results if any params change. This handles loading new results on page navigation.
       // an alternative approach is to use a router guard (beforeRouteUpdate), but has the downside of delaying component creation & updating route until the http request is completed.
       this.fetchAndUpdate(this.api, obj)
-      // update url and set history point
-      this.$router.push(this.$route.path.replace(/[0-9]+$/, obj.page))
+      // update url and set history point, if it is different from our current path
+      const replacePath = this.$route.path.replace(/[0-9]+$/, obj.page)
+      if (replacePath !== this.$route.path) {
+        // pushing to the router triggers a change to params via the pageNumber route prop
+        this.$router.push(replacePath)
+      }
     }
   }
 }
