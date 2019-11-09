@@ -23,4 +23,5 @@ yarn-error.log*
 # rsync deployment script
 deploy.sh
 deploy.txt
+onion.txt
 
