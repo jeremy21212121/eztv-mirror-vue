@@ -6,7 +6,7 @@
     />
     <Controls
       :page="parseInt(this.pageNumber)"
-      :disableNext="this.api.torrents.length < 30"
+      :disableNext="this.api.torrents.length < this.resultsPerPage"
     />
   </div>
 </template>
