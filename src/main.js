@@ -1,9 +1,8 @@
 import Vue from 'vue'
+import store from './store/index.js'
 import App from './App.vue'
 import VueRouter from 'vue-router'
-
 import TorrentView from './components/TorrentView.vue'
-
 Vue.use(VueRouter)
 Vue.config.productionTip = false
 
@@ -44,5 +43,6 @@ router.beforeEach((to, from, next) => {
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

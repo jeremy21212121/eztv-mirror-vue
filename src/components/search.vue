@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
   name: "Searchbox",
@@ -106,6 +107,11 @@ export default {
       results: [],
       error: ''
     }
+  },
+  computed: {
+    ...mapState([
+      'resultsPerPage'
+    ]),
   },
   watch: {
     error(val) {
