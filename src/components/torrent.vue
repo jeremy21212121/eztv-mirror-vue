@@ -17,6 +17,13 @@
                 {{title}}
             </span>
         </span>
+        <button
+            @click="addToMyShows(trimImdbId(imdb))"
+            class="add"
+            title="Add to my shows"
+        >
+            +
+        </button>
         <span class="torrent-magnet">
             <a 
                 :href="magnet_url"
@@ -54,6 +61,7 @@
 li {
     list-style-type: none;
     display: flex;
+    justify-content: space-around;
     margin: 4px 0px;
     /* border: 1px solid #666; */
     border-radius: 3px;
@@ -74,19 +82,36 @@ span {
     padding: 0 2px;
 }
 span.torrent-name {
-    width: 59%;
-    min-width: 59%;
+    width: 57%;
+    /* min-width: 59%; */
+}
+button.add {
+  color: rgba(255,255,255,0.4);
+  font-weight: bold;
+  font-size: 1.5em;
+  background-color: #42ae81;
+  align-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  /* margin: 4px 8px 4px 4px; */
+  padding: 0px;
+  margin: 0 2px;
+  width: 7%;
+  max-width: 30px;
+  max-height: 28px;
+  /* height: 32px; */
 }
 span.torrent-size {
-    width: 9%;
-    min-width: 9%;
-    font-size: 0.9em;
+    width: 8%;
+    max-width: 64px;
+    /* min-width: 9%; */
+    font-size: 0.8em;
 }
 
 span.torrent-post-date {
-    width: 11%;
-    min-width: 11%;
-    font-size: 0.9em;
+    width: 8%;
+    max-width: 64px;
+    /* min-width: 11%; */
+    font-size: 0.8em;
     
 }
 div.seeds-bg {
@@ -100,7 +125,7 @@ div.seeds-bg {
     background-position-x: center;
     opacity: 0.9;
     width: 9%;
-    min-width: 9%;
+    max-width: 64px;
 }
 span.torrent-seeds {
     /* border-radius: 5px;
@@ -125,9 +150,19 @@ img {
     width: 24px;
     opacity: 0.7;
 }
+@media screen and (min-width: 640px) {
+    span.torrent-size {
+    font-size: 0.9em;
+    }
+    span.torrent-post-date {
+        font-size: 0.9em;
+    }
+}
 </style>
 
 <script>
+import { mapMutations } from 'vuex'
+
 export default {
     name: 'Torrent',
     data: function() {
@@ -149,6 +184,9 @@ export default {
         imdb: String
     },
     methods: {
+        ...mapMutations([
+            'addToMyShows'
+        ]),
         parseSize: function(size_str) {
             let output = '';
             const bytes_int = parseInt(size_str);
@@ -199,7 +237,10 @@ export default {
                 output = years.toString() + suffix;
             }
         return output;
-        }
+        },
+        trimImdbId(imdbId) {
+        return imdbId.replace(/tt/,'')
+        },
     }
 }
 </script>

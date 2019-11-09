@@ -106,6 +106,7 @@
 
 <script>
 // import { mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
   name: "Searchbox",
@@ -164,6 +165,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+        'addToMyShows'
+    ]),
     setError: function(errorStr) {
         this.error = errorStr
     },
@@ -212,17 +216,17 @@ export default {
       this.$emit( 'searchByImdb', paramObj )
       this.searchValue = ''
     },
-    addToMyShows(imdbId) {
-      if (!localStorage.hasOwnProperty('myShows')) {
-        localStorage.setItem('myShows', JSON.stringify([ imdbId ]))
-      } else {
-        const myShows = JSON.parse(localStorage.getItem('myShows'));
-        if (!myShows.includes(imdbId)) {
-          myShows.push(imdbId)
-          localStorage.setItem('myShows', JSON.stringify(myShows))
-        }
-      }
-    },
+    // addToMyShows(imdbId) {
+    //   if (!localStorage.hasOwnProperty('myShows')) {
+    //     localStorage.setItem('myShows', JSON.stringify([ imdbId ]))
+    //   } else {
+    //     const myShows = JSON.parse(localStorage.getItem('myShows'));
+    //     if (!myShows.includes(imdbId)) {
+    //       myShows.push(imdbId)
+    //       localStorage.setItem('myShows', JSON.stringify(myShows))
+    //     }
+    //   }
+    // },
   }
 };
 </script>

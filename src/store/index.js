@@ -53,6 +53,15 @@ export default new Vuex.Store({
       if (localStorage) {
         localStorage.setItem('rpp', number)
       }
+    },
+    addToMyShows(state, imdbId) {
+      // check to see if it already exists in myShows
+      if (!state.myShows.includes(imdbId)) {
+        state.myShows.push(imdbId)
+        if (localStorage) {
+          localStorage.setItem('myShows', state.myShows)
+        }
+      }
     }
   }
 })
