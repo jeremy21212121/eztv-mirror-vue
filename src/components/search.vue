@@ -259,6 +259,7 @@ form.settings-form {
   align-items: center;
   justify-content: space-around;
   max-height: 0px;
+  overflow: hidden;
   /* visibility: hidden; */
   opacity: 0;
   width: 100%;
