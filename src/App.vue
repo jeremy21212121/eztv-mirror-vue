@@ -67,11 +67,8 @@ export default {
       this.$router.push('/search/' + payload.imdb_id + '/1')
     }
   },
-  watch: {
-    // 'state.page': function(val) {
-    //   this.fetchAndUpdate(this.api, {page: val});
-    // }
-
+  beforeCreate() {
+    this.$store.commit('initializeStore')
   }
 }
 </script>
