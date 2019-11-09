@@ -25,22 +25,29 @@
 <script>
 import Torrent from "./torrent.vue";
 import Placeholder from "./placeholder.vue";
+import { mapState } from 'vuex'
+
 export default {
   name: "Torrents",
   data: function() {
     return {
       // create an array containing 1 to $limit for placeholders while loading results
-      keyArray: Array.from(Array(this.limit).keys()).map(n => n + 1)
+      // keyArray: Array.from(Array(this.limit).keys()).map(n => n + 1)
     };
   },
   props: {
     torrents: Array,
     loading: Boolean,
-    limit: Number
   },
   components: {
     Torrent,
     Placeholder
+  },
+  computed: {
+    ...mapState(['resultsPerPage']),
+    keyArray() {
+      return Array.from(Array(this.resultsPerPage).keys()).map(n => n + 1)
+    }
   }
 };
 </script>

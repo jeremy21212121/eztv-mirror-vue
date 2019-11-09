@@ -3,7 +3,6 @@
     <Torrents
       :torrents="api.torrents"
       :loading="state.loading"
-      :limit="state.limit"
     />
     <Controls
       :page="parseInt(this.pageNumber)"
@@ -14,6 +13,7 @@
 <script>
 import Torrents from '@/components/torrents.vue'
 import Controls from '@/components/controls.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'TorrentView',
@@ -27,7 +27,6 @@ export default {
         torrent_count: 0
       },
       state: {
-        limit: 30,
         error: '',
         loading: false
       }
@@ -42,8 +41,9 @@ export default {
     Controls
   },
   computed: {
+    ...mapState(['resultsPerPage']),
     params() {
-      const paramObj = { page: this.pageNumber, limit: this.state.limit }
+      const paramObj = { page: this.pageNumber, limit: this.resultsPerPage }
       if (this.imdbID) {
         paramObj.imdb_id = this.imdbID
       }

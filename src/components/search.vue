@@ -26,8 +26,28 @@
       class="settings-form"
       :class="{ active: settings.active }"
     >
-      <label for="rpp">Results per page</label>
-      <input type="range" name="rpp" id="rpp" min="25" max="50">
+      <label for="rpp" id="rpp-label">Results per page:</label>
+      <div class="setting">
+        
+        <datalist :id="settings.datalist.id">
+          <option
+            v-for="option in settings.datalist.options"
+            :key="'option'+option"
+            :value="option"
+            :label="option"
+          ></option>
+        </datalist>
+        <input
+          v-model.number="resultsPerPage"
+          :min="settings.min"
+          :max="settings.max"
+          :step="settings.step"
+          :list="settings.datalist.id"
+          type="range"
+          name="rpp"
+          id="rpp"
+        >
+      </div>
     </form>
     <ol
       v-if="results.length > 0"
@@ -85,18 +105,26 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 
 export default {
   name: "Searchbox",
   props: {
-    hasLocalStorage: Boolean,
-    resultsPerPage: Number
+    hasLocalStorage: Boolean
   },
   data: function() {
     return {
       settings: {
-        active: false
+        active: false,
+        min: 20,
+        max: 50,
+        step: 10,
+        datalist: {
+          id: 'tickmarks',
+          options: [
+            20,30,40,50
+          ]
+        }
       },
       searchValue: '',
       omdb: {
@@ -109,9 +137,14 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'resultsPerPage'
-    ]),
+    resultsPerPage: {
+      get () {
+        return this.$store.state.resultsPerPage
+      },
+      set (value) {
+        this.$store.commit('setResultsPerPage', value)
+      }
+    }
   },
   watch: {
     error(val) {
@@ -206,8 +239,8 @@ section {
 img.settings {
   /* width: 32px;
   height: 32px; */
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   transform: rotate(0deg);
   transition: transform 300ms ease;
 }
@@ -222,17 +255,38 @@ form.search-form {
 }
 form.settings-form {
   display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: space-around;
   max-height: 0px;
   /* visibility: hidden; */
   opacity: 0;
   width: 100%;
-  transition: max-height 500ms ease,opacity 300ms ease;
+  transition: max-height 500ms ease,opacity 200ms ease;
 }
 form.settings-form.active {
+  margin-top: 4px;
   max-height: 64px;
   /* visibility: visible; */
   opacity: 1;
   /* transition: all 300ms ease; */
+}
+#rpp-label {
+  border-radius: 3px;
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
+  padding: 8px 10px;
+  /* margin-right: space-around; */
+  /* margin-bottom: 4px; */
+}
+datalist {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+}
+div.setting {
+  margin-top: 8px;
+  padding: 4px;
 }
 form.settings-form label {
   display: block;
