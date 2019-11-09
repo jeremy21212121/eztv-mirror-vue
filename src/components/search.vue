@@ -188,7 +188,8 @@ export default {
                 parseInt(json.totalResults) > 0 
             ) {
                 resultArr.length = 0;// clear existing resultArr to accomodate the new results
-                const ongoing = json.Search.filter(x => x.Year.endsWith('–')).sort((a,b) => parseInt(b.Year.replace('–', '')) - parseInt(a.Year.replace('–', '')))
+                const ongoing = json.Search.filter(x => x.Year.endsWith('–')).sort((a,b) => parseInt(a.Year.replace('–', '')) - parseInt(b.Year.replace('–', '')))
+                // ordering ongoing shows by earliest first-air date
                 const ended = json.Search.filter(x => !x.Year.endsWith('–')).sort((a,b) => parseInt(b.Year.substring(0,4)) - parseInt(a.Year.substring(0,4)))
                 resultArr.push(...ongoing, ...ended)
                 // you can tell its a .net api by the capitalized property names and using strings instead of booleans and numbers. WHY!?!
