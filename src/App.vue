@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="header-image">
-        <a href="/" title="home">
+        <a href="/" @click.prevent="handleHomeClick" title="home">
           <img alt="Meowcats logo" src="./assets/logo.png">
         </a>
         <Speechbubble
@@ -65,6 +65,15 @@ export default {
     searchByImdb: function(payload) {
       // this.fetchAndUpdate(this.api, payload);
       this.$router.push('/search/' + payload.imdb_id + '/1')
+    },
+    handleHomeClick() {
+      if (this.$route.path === '/latest/1') {
+        // reload to update results if we are already on home page
+        window.location.reload()
+      } else {
+        // $router.push('/') causes error, probably due to router guard that redirects to '/latest/1'. To prevent console error, we $router.push('/latest/1')
+        this.$router.push('/latest/1')
+      }
     }
   },
   beforeCreate() {
