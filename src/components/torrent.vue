@@ -88,17 +88,12 @@ span.torrent-name {
 button.add {
   color: rgba(255,255,255,0.4);
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: 1.4em;
   background-color: #42ae81;
   align-self: center;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  /* margin: 4px 8px 4px 4px; */
-  padding: 0px;
+  padding: 0px 5px;
   margin: 0 2px;
-  width: 7%;
-  max-width: 30px;
-  max-height: 28px;
-  /* height: 32px; */
 }
 span.torrent-size {
     width: 8%;
