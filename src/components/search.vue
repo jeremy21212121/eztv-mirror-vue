@@ -35,7 +35,7 @@
             :key="'option'+option"
             :value="option"
             :label="option"
-          ></option>
+          >{{ option }}</option>
         </datalist>
         <input
           v-model.number="resultsPerPage"
@@ -262,7 +262,7 @@ form.settings-form {
   display: flex;
   /* flex-direction: column; */
   align-items: center;
-  justify-content: space-around;
+  /* justify-content: space-around; */
   max-height: 0px;
   overflow: hidden;
   /* visibility: hidden; */
@@ -278,6 +278,7 @@ form.settings-form.active {
   /* transition: all 300ms ease; */
 }
 #rpp-label {
+  margin: 0 4%;
   border-radius: 3px;
   background-color: rgba(255,255,255,0.1);
   color: #fff;
@@ -285,12 +286,16 @@ form.settings-form.active {
   /* margin-right: space-around; */
   /* margin-bottom: 4px; */
 }
+#rpp {
+  -moz-appearance: progressbar;
+}
 datalist {
   display: flex;
   justify-content: space-between;
   font-size: 0.7rem;
 }
 div.setting {
+  margin: 8px 4% 0px 4%;
   margin-top: 8px;
   padding: 4px;
 }
