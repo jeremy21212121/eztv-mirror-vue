@@ -153,7 +153,7 @@ export default {
         this.$emit('error', val);
         this.results.length = 0;
       } else {
-        this.$emit('clearError');
+        this.$emit('clear-error');
       }
     },
     searchValue(val) {
@@ -213,7 +213,7 @@ export default {
       return imdbId.replace(/tt/,'')
     },
     imdbSearchHandler(paramObj) {
-      this.$emit( 'searchByImdb', paramObj )
+      this.$emit( 'search-by-imdb', paramObj )
       this.searchValue = ''
     },
     // addToMyShows(imdbId) {
