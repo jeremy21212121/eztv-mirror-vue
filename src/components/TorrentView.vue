@@ -19,7 +19,7 @@ export default {
   name: 'TorrentView',
   data() {
     return {
-      baseUrl: 'https://eztv.io/api/get-torrents',
+      baseUrl: 'https://eztv.re/api/get-torrents',
       api: {
         limit: 0,
         page: 0,
