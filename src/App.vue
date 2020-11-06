@@ -18,7 +18,7 @@
       @clearError="setError('')"
       :hasLocalStorage="hasLocalStorage"
     />
-    <router-view></router-view>
+    <router-view @error="setError"></router-view>
   </div>
 </template>
 
