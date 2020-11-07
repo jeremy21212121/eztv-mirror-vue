@@ -13,9 +13,9 @@
       :msg="this.state.error"
     />
     <Searchbox 
-      @searchByImdb="searchByImdb"
+      @search-by-imdb="searchByImdb"
       @error="setError($event)"
-      @clearError="setError('')"
+      @clear-error="setError('')"
       :hasLocalStorage="hasLocalStorage"
     />
     <router-view @error="setError"></router-view>
