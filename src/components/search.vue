@@ -90,7 +90,7 @@
             v-if="hasLocalStorage"
             type="submit"
             title="add to my shows"
-            @click.stop="addToMyShows(trimImdbId(item.imdbID))"
+            @click.stop="()=>{addToMyShows(trimImdbId(item.imdbID)); searchValue = '';}"
           >
             +
           </button>
@@ -216,17 +216,6 @@ export default {
       this.$emit( 'search-by-imdb', paramObj )
       this.searchValue = ''
     },
-    // addToMyShows(imdbId) {
-    //   if (!localStorage.hasOwnProperty('myShows')) {
-    //     localStorage.setItem('myShows', JSON.stringify([ imdbId ]))
-    //   } else {
-    //     const myShows = JSON.parse(localStorage.getItem('myShows'));
-    //     if (!myShows.includes(imdbId)) {
-    //       myShows.push(imdbId)
-    //       localStorage.setItem('myShows', JSON.stringify(myShows))
-    //     }
-    //   }
-    // },
   }
 };
 </script>
@@ -416,11 +405,27 @@ div.info-wrapper {
 @media screen and (min-width: 420px) {
   ol {
     width: 85%;
+    /* max-width: 85%; */
   }
 }
 @media screen and (min-width: 550px) {
   ol {
     width: 75%;
+    /* max-width: 75%; */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media screen and (min-width: 960px) {
+  ol {
+    /* max-width: 75%; */
+    margin-right: 12%;
+  }
+}
+@media screen and (min-width: 1500px) {
+  ol {
+    /* max-width: 75%; */
+    margin-right: 6%;
   }
 }
 </style>

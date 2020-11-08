@@ -18,7 +18,7 @@
       @clear-error="setError('')"
       :hasLocalStorage="hasLocalStorage"
     />
-    <router-view @error="setError"></router-view>
+    <router-view @error="setError" @update-speech="(str)=>{ this.state.speech = str }"></router-view>
   </div>
 </template>
 
@@ -61,6 +61,9 @@ export default {
     },
     setLoading: function(bool) {
       this.state.loading = bool
+    },
+    setSpeech: function(msg) {
+      this.state.speech = msg
     },
     searchByImdb: function(payload) {
       // this.fetchAndUpdate(this.api, payload);

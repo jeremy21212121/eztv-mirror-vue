@@ -3,6 +3,8 @@ import store from './store/index.js'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import TorrentView from './components/TorrentView.vue'
+import MyShowsView from './components/MyShowsView.vue'
+
 Vue.use(VueRouter)
 Vue.config.productionTip = false
 
@@ -24,7 +26,7 @@ const routes = [
   },
   {
     path: '/myshows/:pageNumber',
-    component: TorrentView,
+    component: MyShowsView,
     props: true
   },
 ]

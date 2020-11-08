@@ -18,9 +18,10 @@
             </span>
         </span>
         <button
+            :disabled="imdb.length < 2 || (Array.isArray(myShows) && myShows.includes(imdb))"
             @click="addToMyShows(trimImdbId(imdb))"
             class="add"
-            title="Add to my shows"
+            :title="(Array.isArray(myShows) && myShows.includes(imdb)) ? 'Already in my shows' : (imdb.length > 1) ? 'Add to my shows' : 'Unable to add'"
         >
             +
         </button>
@@ -94,6 +95,11 @@ button.add {
   border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 0px 5px;
   margin: 0 2px;
+  cursor: pointer;
+}
+button.add:disabled {
+    opacity: 0.25;
+    cursor: default;
 }
 span.torrent-size {
     width: 8%;
@@ -156,7 +162,7 @@ img {
 </style>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
     name: 'Torrent',
@@ -236,6 +242,9 @@ export default {
         trimImdbId(imdbId) {
         return imdbId.replace(/tt/,'')
         },
+    },
+    computed: {
+        ...mapState(['myShows'])
     }
 }
 </script>
