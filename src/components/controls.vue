@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav @click="clicked">
     <router-link
       v-show="this.page > 1"
       :to="previousPageUrl"
@@ -47,6 +47,11 @@ export default {
   props: {
     page: Number,
     disableNext: Boolean
+  },
+  methods: {
+    clicked() {
+      this.$emit('clicked')
+    }
   },
   computed: {
     disableNextButton() {

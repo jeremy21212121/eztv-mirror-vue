@@ -11,6 +11,7 @@
     <Error
       v-if="this.state.error.length > 1"
       :msg="this.state.error"
+      @clear-error="setError('')"
     />
     <Searchbox 
       @search-by-imdb="searchByImdb"

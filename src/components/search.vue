@@ -8,6 +8,7 @@
         :class="{ active: settings.active }"
       >
     </button>
+    <a href="/myshows/1" title="see MyShows" class="my-shows">MyShows</a>
     <form
       @submit.prevent="()=>{}"
       class="search-form"
@@ -90,7 +91,7 @@
             v-if="hasLocalStorage"
             type="submit"
             title="add to my shows"
-            @click.stop="()=>{addToMyShows(trimImdbId(item.imdbID)); searchValue = '';}"
+            @click.stop="()=>{addToMyShows(trimImdbId(item.imdbID)); searchValue = '';clearError();}"
           >
             +
           </button>
@@ -223,6 +224,8 @@ export default {
 <style scoped>
 section {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   /* flex-direction: column; */
   flex-wrap: wrap;
   /* padding: 4px; */
@@ -241,8 +244,20 @@ img.settings {
 img.settings.active {
   transform: rotate(360deg);
 }
+a.my-shows {
+  color: #dddddd;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #dddddd;
+  background-color: rgba(255,255,255,0);
+  transition: background-color 150ms ease-in-out;
+}
+a.my-shows:hover {
+  background-color: rgba(0,0,0,0.1);
+  /* color: #aaaaaa; */
+}
 form.search-form {
-  flex-grow: 1;
+  /* flex-grow: 1; */
   display: flex;
   justify-content: flex-end;
   color: black;

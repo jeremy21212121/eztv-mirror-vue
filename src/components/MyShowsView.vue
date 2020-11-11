@@ -1,9 +1,10 @@
 <template>
   <div>
-    <Torrents :torrents="api.torrents" :loading="state.loading" />
+    <Torrents :torrents="currentTorrents" :loading="state.loading" />
     <Controls
-      :page="parseInt(this.pageNumber)"
-      :disableNext="this.api.torrents.length < this.resultsPerPage"
+      :page="parseInt(pageNumber)"
+      :disableNext="api.torrents[api.torrents.length-1] === currentTorrents[currentTorrents.length-1]"
+      @clicked="$nextTick(ensureWindowIsNearTop)"
     />
   </div>
 </template>
@@ -13,7 +14,7 @@ import Controls from "@/components/controls.vue";
 import { mapState } from "vuex";
 
 export default {
-  name: "TorrentView",
+  name: "MyShowsView",
   data() {
     return {
       baseUrl: "https://eztv.re/api/get-torrents",
@@ -47,17 +48,29 @@ export default {
       }
       return paramObj;
     },
+    currentTorrents() {
+      const isInValidState = Array.isArray(this.api.torrents) && this.api.torrents.length > 20;
+      let output = this.api.torrents;
+      if (isInValidState) {
+        const page = Number(this.pageNumber) || 1;
+        const offset = (page - 1) * this.resultsPerPage;
+        if (offset < this.api.torrents.length) {
+          output = this.api.torrents.slice(offset, offset + this.resultsPerPage)
+        }
+      }
+      return output
+    }
   },
   mounted: async function() {
     // handles loading data on initial page load/refresh
     await this.fetchAndUpdate();
     // handle edge case where window is reloaded while scrolled down
-    this.ensureWindowIsNearTop();
+    this.$nextTick(this.ensureWindowIsNearTop);
   },
   methods: {
     ensureWindowIsNearTop: function() {
       // if the user is scrolled past the first li element, scroll to top
-      if (window.pageYOffset > 211) {
+      if (window.pageYOffset > 200) {
         window.scroll(0, 0);
       }
     },
