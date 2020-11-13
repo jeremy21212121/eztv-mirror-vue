@@ -13,7 +13,7 @@
       @submit.prevent="()=>{}"
       class="search-form"
     >
-      <input type="search" placeholder="search" aria-label="search by name" v-model="searchValue" required>
+      <input type="search" placeholder="search" aria-label="search by name" v-model="searchValue">
       <button type="submit" @click.prevent="fetchOmdb(searchValue, results)" aria-label="submit search">
         <img
           aria-hidden="true"
@@ -184,22 +184,27 @@ export default {
       );
     },
     fetchOmdb: async function(searchStr, resultArr) {
-        if (searchStr === '') { return }
+        const trimmedSearchString = searchStr.trim()
+        if (trimmedSearchString === '') { this.setError('Invalid search terms. Enter show name before searching.');return }
         try {
-            const result = await fetch( this.buildOmdbUrl(searchStr) );
+            const result = await fetch( this.buildOmdbUrl(trimmedSearchString) );
             const json = await result.json();
             if (
                 json.Response === "True" && 
                 parseInt(json.totalResults) > 0 
             ) {
+                // Happy path
                 resultArr.length = 0;// clear existing resultArr to accomodate the new results
                 const ongoing = json.Search.filter(x => x.Year.endsWith('–')).sort((a,b) => parseInt(a.Year.replace('–', '')) - parseInt(b.Year.replace('–', '')))
                 // ordering ongoing shows by earliest first-air date
                 const ended = json.Search.filter(x => !x.Year.endsWith('–')).sort((a,b) => parseInt(b.Year.substring(0,4)) - parseInt(a.Year.substring(0,4)))
                 resultArr.push(...ongoing, ...ended)
-                // you can tell its a .net api by the capitalized property names and using strings instead of booleans and numbers. WHY!?!
+                //[RANT] you can tell its a .net api by the capitalized property names and using strings instead of booleans and numbers. WHY!?!
+                // clear any old errors
+                this.clearError()
             }
             if (
+                // sad path :(
                 json.Response === "False" &&
                 json.Error
             ) {
@@ -344,7 +349,8 @@ ol::before {
   height: 0;
   border-left: 18px solid transparent;
   border-right: 18px solid transparent;
-  border-bottom: 40px solid rgba(255,255,255,0.2);
+  border-bottom: 40px solid #7D8A97;
+  /* -moz-border-bottom: 38px solid rgba(255,255,255,0.2); */
 }
 ol {
   transition: all 300ms ease;
@@ -356,7 +362,12 @@ ol {
   padding-left: 0;
   padding-bottom: 5px;
   border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.2);
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  /* Hard-code background color rather than use partial alpha transparency. This is to fix a firefox bug.
+    Specifically, the ol::before pseudo element is laid out -2px on the Y-axis, causing an overlap which is apparent due to the partial transparency.
+    Instead, I used a color picker to get the correct hex color code (#7D8A97) and I used it on both overlapping elements. This won't cause a problem unless we change the background color, in which case we will need to change this color, too.
+   */
+  background-color: #7D8A97;
 }
 ol.inactive-list {
   max-height: 0px;
