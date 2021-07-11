@@ -158,7 +158,7 @@ export default {
         // gather all the known-good torrent objects
         const torrents = filteredResponses.map((resp) => resp.torrents).flat();
         // sort them by most recent
-        torrents.sort((a, b) => b.id - a.id);
+        torrents.sort((a, b) => b.date_released_unix - a.date_released_unix);
         // clear any exisiting torrents
         this.api.torrents.length = 0;
         // and finally add them to our collection
